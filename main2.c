@@ -126,6 +126,22 @@ char **HuffmanCode(int pcnt[],HuffmanTree HT,int n,int valid_nodes,int char_inde
     return codes;
 }
 
+int calculateWPL(HuffmanTree HT, int n, int *pcnt) {
+    int wpl = 0;
+    for (int i = 0; i < n; i++) {
+        if (HT[i].lchild == -1 && HT[i].rchild == -1) {  // 叶子节点
+            int depth = 0;
+            int j = i;
+            while (HT[j].parent != -1) {
+                depth++;
+                j = HT[j].parent;
+            }
+            wpl += depth * HT[i].weight;
+        }
+    }
+    return wpl;
+}
+
 int main() {
     char s[] = "HUST EIC zhen shi hai can wo le";
     int n = 26;
@@ -139,6 +155,7 @@ int main() {
     }
     HuffmanTree HT = createHuffmanTree(2 * valid_nodes - 1);
     
+    
 
     // 打印权值表
     printf("Letter frequencies:\n");
@@ -150,6 +167,7 @@ int main() {
     int *char_index = (int*)malloc(valid_nodes*sizeof(int));//store like char_index[0]='a'
     char **codes = HuffmanCode(pcnt, HT, n, valid_nodes, char_index);
 
+    int WPL = calculateWPL(HT,valid_nodes,pcnt);
 
     //打印编码表
     if (codes != NULL) {
@@ -161,6 +179,7 @@ int main() {
         free(codes);
     }
 
+    printf("\nWPL:%d",WPL);
     free(pcnt);
     free(HT);
     return 0;
